@@ -3,6 +3,7 @@ package com.udacity.jwdnd.course1.cloudstorage.controller;
 import com.udacity.jwdnd.course1.cloudstorage.model.File;
 import com.udacity.jwdnd.course1.cloudstorage.model.User;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.unit.DataSize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +23,8 @@ import java.io.ByteArrayInputStream;
 public class FileController {
 
     private FileService fileService;
+    @Value("${files.max-file-size}")
+    private DataSize maximumFileSize;;
 
     public FileController(FileService fileService) {
         this.fileService = fileService;
@@ -39,6 +43,13 @@ public class FileController {
 
     @PostMapping("/upload")
     public String saveFile(@RequestParam("fileUpload") MultipartFile multipartFile, Authentication authentication, Model model){
+
+        if (multipartFile.getSize() > maximumFileSize.toBytes()) {
+            model.addAttribute("result", "error");
+            model.addAttribute("message", "Your file exceeds the allowed maximum size of " + maximumFileSize.toMegabytes() + "MB.");
+            return "result";
+        }
+
         String username = authentication.getName();
 
         try {

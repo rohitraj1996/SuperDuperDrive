@@ -20,12 +20,26 @@ public class NoteController {
 
     @PostMapping("/save")
     public String addNote(Authentication authentication, Note note, Model model){
-        if(note.getNoteId() == null) {
-            this.noteService.createNote(authentication.getName(), note);
+        String username = authentication.getName();
+
+        if (note.getNoteDescription().length() > 1000){
+            model.addAttribute("result", "error");
+            model.addAttribute("message", "Note can't be saved as description exceed 1000 characters.");
+
         } else {
-            this.noteService.updateNote(note);
+            if (noteService.getNoteByTitle(note.getNoteTitle(), username) != null){
+                model.addAttribute("result", "error");
+                model.addAttribute("message", "Note already available.");
+
+            } else if (note.getNoteId() == null) {
+                this.noteService.createNote(authentication.getName(), note);
+                model.addAttribute("result", "success");
+            } else {
+                this.noteService.updateNote(note);
+                model.addAttribute("result", "success");
+            }
+
         }
-        model.addAttribute("result", "success");
         return "result";
     }
 

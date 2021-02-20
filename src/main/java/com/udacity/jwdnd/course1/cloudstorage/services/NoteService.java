@@ -35,4 +35,8 @@ public class NoteService {
         return noteMapper.getNotes(userMapper.getUser(username).getUserId());
     }
 
+    public Note getNoteByTitle(String noteTitle, String username){
+        return noteMapper.getNoteByTitle(noteTitle, userMapper.getUser(username).getUserId());
+    }
+
 }

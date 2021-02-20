@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class CloudStorageApplicationTests {
 
 	@LocalServerPort
@@ -50,30 +51,35 @@ class CloudStorageApplicationTests {
 
 	// Basic signup, login, and unauthorized access tests
 	@Test
+	@Order(1)
 	public void testLoginPage() {
 		this.driver.get(this.baseUrl + "/login");
 		Assertions.assertEquals("Login", this.driver.getTitle());
 	}
 
 	@Test
+	@Order(2)
 	public void testNoHomeAccessWithoutLogin(){
 		this.driver.get(this.baseUrl + "/home");
 		assertNotEquals("Home", this.driver.getTitle());
 	}
 
 	@Test
+	@Order(3)
 	public void testRedirectToLoginIfNotSignedIn() {
 		this.driver.get(baseUrl + "/home");
 		Assertions.assertEquals("Login", this.driver.getTitle());
 	}
 
 	@Test
+	@Order(4)
 	public void testSignupPage() {
 		this.driver.get(this.baseUrl + "/signup");
 		Assertions.assertEquals("Sign Up", this.driver.getTitle());
 	}
 
 	@Test
+	@Order(5)
 	public void testSignupLoginSuccess(){
 		this.signUp();
 		this.logIn();
@@ -81,14 +87,15 @@ class CloudStorageApplicationTests {
 	}
 
 	@Test
+	@Order(6)
 	public void testLogoutSuccess(){
-		this.signUp();
 		this.logIn();
 		this.logOut();
 		assertEquals("Login", this.driver.getTitle());
 	}
 
 	@Test
+	@Order(7)
 	public void testLoginFailsIfNotSignUp() {
 		this.driver.get(this.baseUrl + "/login");
 		LoginPage loginPage = new LoginPage(this.driver);
@@ -102,8 +109,8 @@ class CloudStorageApplicationTests {
 
 	// Note creation, viewing, editing, and deletion tests
 	@Test
+	@Order(8)
 	public void testSaveNote(){
-		this.signUp();
 		this.logIn();
 
 		HomePage homePage = this.addNote(this.NOTE_TITLE, this.NOTE_DESCRIPTION);
@@ -119,8 +126,8 @@ class CloudStorageApplicationTests {
 	}
 
 	@Test
+	@Order(9)
 	public void testEditNote() {
-		this.signUp();
 		this.logIn();
 
 		String updateNoteTitle = "Updated Test Title!";
@@ -146,8 +153,8 @@ class CloudStorageApplicationTests {
 	}
 
 	@Test
+	@Order(10)
 	public void testDeleteNote() {
-		this.signUp();
 		this.logIn();
 
 		// Add new note
@@ -183,8 +190,8 @@ class CloudStorageApplicationTests {
 
 	// Credential creation, viewing, editing, and deletion tests
 	@Test
+	@Order(11)
 	public void testSaveCredential() {
-		this.signUp();
 		this.logIn();
 
 		// Create
@@ -205,8 +212,8 @@ class CloudStorageApplicationTests {
 	}
 
 	@Test
+	@Order(12)
 	public void testEditCredential() {
-		this.signUp();
 		this.logIn();
 
 		String newUrl = "www.google.com";
@@ -237,8 +244,8 @@ class CloudStorageApplicationTests {
 	}
 
 	@Test
+	@Order(13)
 	public void testDeleteCredential() {
-		this.signUp();
 		this.logIn();
 
 		// Create

@@ -12,6 +12,9 @@ public interface NoteMapper {
     @Select("SELECT * FROM NOTES where userId = #{userId}")
     List<Note> getNotes(Integer userId);
 
+    @Select("SELECT * FROM NOTES WHERE noteTitle = #{noteTitle} AND userid = #{userId}")
+    public Note getNoteByTitle(String noteTitle, Integer userId);
+
     // Insert statement(s)
     @Insert("INSERT INTO NOTES(noteTitle, noteDescription, userId) VALUES (" +
             "#{noteTitle}, #{noteDescription}, #{userId})")
